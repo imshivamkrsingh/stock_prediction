@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Predection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        form {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 12px;
+            width: 200px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        input, select {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            margin: 5px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            background: #ff8c00;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+        }
+        .btn-link{
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            background: #ff8c00;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            text-decoration: none;
+
+        }
+        a{
+            text-decoration: none;
+            color: #fff;
+        }
+        .error {
+            color: #ff4c4c;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background: #ff8c00;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        tr:hover {
+            background: #ffcc80;
+            transition: 0.3s;
+        }
+        img {
+            margin-top: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📈 Stock Price Prediction</h1>
+    <form method="POST">
+        <input type="text" name="symbol" placeholder="Enter Stock Symbol" required>
+        <select name="period">
+            <option value="1mo" selected>1 Month</option>
+            <option value="2mo">3 Months</option>
+            <option value="6mo">6 Months</option>
+            <option value="1y">1 Year</option>
+            <option value="5y">5 Year</option>
+        </select>
+        <button type="submit">Get Stock Data</button>
+    </form> <br>
+
+    <a href="/stkname" class="btn-link">📌 Get Stock Symbol</a>
+
+    {% if error_message %}
+        <p class="error">⚠️ {{ error_message }}</p>
+    {% endif %}
+
+    {% if stock_price %}
+        <h2>📉 Latest Closing Price: <span style="color:#ffcc00">${{ stock_price }}</span></h2>
+    {% endif %}
+
+    {% if predicted_price %}
+        <h2>🔮 Predicted Next Day Price: <span style="color:#00ff00">${{ predicted_price }}</span></h2>
+    {% endif %}
+
+    {% if plot_url %}
+        <h2>📊 Stock Price Trend</h2>
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Stock Price Chart">
+    {% endif %}
+
+    {% if stock_data is not none %}
+        <h2>📜 Stock Data Table</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+            </tr>
+            {% for row in stock_data.iterrows() %}
+            <tr>
+                <td>{{ row[1]["Date"] }}</td>
+                <td>${{ "%.2f"|format(row[1]["Open"]) }}</td>
+                <td>${{ "%.2f"|format(row[1]["High"]) }}</td>
+                <td>${{ "%.2f"|format(row[1]["Low"]) }}</td>
+                <td>${{ "%.2f"|format(row[1]["Close"]) }}</td>
+                <td>{{ row[1]["Volume"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+</body>
+</html>
